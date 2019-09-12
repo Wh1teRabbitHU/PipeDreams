@@ -191,7 +191,7 @@
         var classicGameText = new Kinetic.Text({
             x: width / 2,
             y: (height / 3) - 100,
-            text: 'Klasszikus játék',
+            text: 'Classic game',
             fontSize: 32,
             fontFamily: 'Calibri',
             fill: 'grey'
@@ -204,7 +204,7 @@
         var timeTrialGameText = new Kinetic.Text({
             x: width / 2,
             y: (height / 3),
-            text: 'Időfutam játék',
+            text: 'Time trial',
             fontSize: 32,
             fontFamily: 'Calibri',
             fill: 'grey'
@@ -217,7 +217,7 @@
         var scoreBoardText = new Kinetic.Text({
             x: width / 2,
             y: (height / 3) + 100,
-            text: 'Eredménytábla',
+            text: 'Scoreboard',
             fontSize: 32,
             fontFamily: 'Calibri',
             fill: 'grey'
@@ -230,7 +230,7 @@
         var informationText = new Kinetic.Text({
             x: width / 2,
             y: (height / 3) + 200,
-            text: 'Információ',
+            text: 'Information',
             fontSize: 32,
             fontFamily: 'Calibri',
             fill: 'grey'
@@ -347,7 +347,7 @@
         var easyText = new Kinetic.Text({
             x: width / 2,
             y: (height / 3) - 100,
-            text: 'Könnyű (5x5)',
+            text: 'Easy (5x5)',
             fontSize: 32,
             fontFamily: 'Calibri',
             fill: 'grey'
@@ -360,7 +360,7 @@
         var mediumText = new Kinetic.Text({
             x: width / 2,
             y: (height / 3),
-            text: 'Közepes (10x10)',
+            text: 'Medium (10x10)',
             fontSize: 32,
             fontFamily: 'Calibri',
             fill: 'grey'
@@ -373,7 +373,7 @@
         var hardText = new Kinetic.Text({
             x: width / 2,
             y: (height / 3) + 100,
-            text: 'Nehéz (15x15)',
+            text: 'Hard (15x15)',
             fontSize: 32,
             fontFamily: 'Calibri',
             fill: 'grey'
@@ -386,7 +386,7 @@
         var backText = new Kinetic.Text({
             x: width / 2,
             y: (height / 3) + 200,
-            text: 'Vissza a főmenübe',
+            text: 'Back to the menu',
             fontSize: 32,
             fontFamily: 'Calibri',
             fill: 'grey'
@@ -510,7 +510,7 @@
         var timeTrialText = new Kinetic.Text({
             x: width / 2,
             y: (height / 3),
-            text: 'Időfutam játék indítása',
+            text: 'Starting time trial',
             fontSize: 32,
             fontFamily: 'Calibri',
             fill: 'grey'
@@ -523,7 +523,7 @@
         var backText = new Kinetic.Text({
             x: width / 2,
             y: (height / 3) + 200,
-            text: 'Vissza a főmenübe',
+            text: 'Back to the menu',
             fontSize: 32,
             fontFamily: 'Calibri',
             fill: 'grey'
@@ -595,7 +595,7 @@
         var classicText = new Kinetic.Text({
             x: width / 2,
             y: (height / 3) - 100,
-            text: 'Klasszikus játékmód',
+            text: 'Classic game',
             fontSize: 32,
             fontFamily: 'Calibri',
             fill: 'grey'
@@ -608,7 +608,7 @@
         var easyText = new Kinetic.Text({
             x: (width / 2) - 120,
             y: (height / 3) - 40,
-            text: 'Könnyű\n' + (typeof $.cookie('classic_high_score_easy') == 'undefined' ? '99:99' : $.cookie('classic_high_score_easy')),
+            text: 'Easy\n' + (typeof $.cookie('classic_high_score_easy') == 'undefined' ? '99:99' : $.cookie('classic_high_score_easy')),
             fontSize: 18,
             fontFamily: 'Calibri',
             fill: 'grey'
@@ -621,7 +621,7 @@
         var mediumText = new Kinetic.Text({
             x: width / 2,
             y: (height / 3) - 40,
-            text: 'Közepes\n' + (typeof $.cookie('classic_high_score_medium') == 'undefined' ? '99:99' : $.cookie('classic_high_score_medium')),
+            text: 'Medium\n' + (typeof $.cookie('classic_high_score_medium') == 'undefined' ? '99:99' : $.cookie('classic_high_score_medium')),
             fontSize: 18,
             fontFamily: 'Calibri',
             fill: 'grey'
@@ -634,7 +634,7 @@
         var hardText = new Kinetic.Text({
             x: (width / 2) + 120,
             y: (height / 3) - 40,
-            text: 'Nehéz\n' + (typeof $.cookie('classic_high_score_hard') == 'undefined' ? '99:99' : $.cookie('classic_high_score_hard')),
+            text: 'Hard\n' + (typeof $.cookie('classic_high_score_hard') == 'undefined' ? '99:99' : $.cookie('classic_high_score_hard')),
             fontSize: 18,
             fontFamily: 'Calibri',
             fill: 'grey'
@@ -647,7 +647,7 @@
         var timeTrialText = new Kinetic.Text({
             x: width / 2,
             y: (height / 3) + 40,
-            text: 'Időfutam játékmód',
+            text: 'Time trial',
             fontSize: 32,
             fontFamily: 'Calibri',
             fill: 'grey'
@@ -673,7 +673,7 @@
         var backText = new Kinetic.Text({
             x: width / 2,
             y: (height / 3) + 200,
-            text: 'Vissza a főmenübe',
+            text: 'Back to the menu',
             fontSize: 32,
             fontFamily: 'Calibri',
             fill: 'grey'
@@ -734,10 +734,10 @@
             fill: 'grey'
         });
 
-        var infoText = 'A játék célja:\nForgasd úgy a csöveket, hogy a végén az összes összeköttetésben legyenek a kiindulási ponttal!\n';
-        infoText += 'A klasszikus módban 3 nehézség közül választhatsz, míg az időfutamnál folyamatosan fognak nehezedni a pályák.\n';
-        infoText += 'Játékmódtól függetlenül fontos szerepe lesz az időnek is, úgyhogy ne hezitálj túl sokat!\n';
-        infoText += 'Az elért eredményeidet az eredménytábla menüpontban tekintheted meg!\n\nKészítette: White Rabbit (Ruszka Tamás) (C) 2014,\nE-mail: ruszka dot tamas at gmail dot com';
+        var infoText = 'Game goal:\nTurn all the pipes into the correct position, so every pipe connected to each other!\n';
+        infoText += 'In classic game you can choose between three different difficulty, while in time trial the difficulty is incrementaly increasing.\n';
+        infoText += 'Time is key, so don\'t hesitate too much!\n';
+        infoText += 'You can check your rank at the scoreboard!\n\nMade by: White Rabbit (Tamás Ruszka) (C) 2014,\nMail: ruszka dot tamas at gmail dot com';
 
         informationText.setText(infoText);
 
@@ -748,7 +748,7 @@
         var backText = new Kinetic.Text({
             x: width / 2,
             y: (height / 3) + 200,
-            text: 'Vissza a főmenübe',
+            text: 'Back to the menu',
             fontSize: 32,
             fontFamily: 'Calibri',
             fill: 'grey'
@@ -1059,7 +1059,7 @@
         var backText = new Kinetic.Text({
             x: 200,
             y: 200,
-            text: 'Vissza',
+            text: 'Back',
             fontSize: 48,
             fontFamily: 'Calibri',
             fill: 'grey'
@@ -1068,7 +1068,7 @@
         var timerTitleText = new Kinetic.Text({
             x: 30,
             y: 50,
-            text: 'Idő:',
+            text: 'Time:',
             fontSize: 32,
             fontFamily: 'Calibri',
             fill: 'grey'
@@ -1086,7 +1086,7 @@
         var scoreTitleText = new Kinetic.Text({
             x: 200,
             y: 50,
-            text: 'Előző rekord:',
+            text: 'Previous record:',
             fontSize: 32,
             fontFamily: 'Calibri',
             fill: 'grey'
@@ -1104,7 +1104,7 @@
         var levelTitleText = new Kinetic.Text({
             x: 30,
             y: 200,
-            text: 'Aktuális szint:',
+            text: 'Actual level:',
             fontSize: 32,
             fontFamily: 'Calibri',
             fill: 'grey'
@@ -1241,7 +1241,7 @@
                 newRecord = true;
             }
 
-            alert("Gratulálok, sikeresen kiraktad a pályát! \nAz időd: " + timer.getMin() + " : " + timer.getSec() + (newRecord ? "\nÚj rekord!" : ""));
+            alert("Congratulation, you solved the level! \nYour time: " + timer.getMin() + " : " + timer.getSec() + (newRecord ? "\nNew record!" : ""));
             if (newRecord) {
                 $.cookie('classic_high_score_' + gameDifficulty, timer.getMin() + ' : ' + timer.getSec(), {
                     expires: 365,
@@ -1273,7 +1273,7 @@
                 newRecord = true;
             }
 
-            alert("Gratulálok a teljesítményedhez! \nAz elért szinted: " + level + (newRecord ? "\nÚj rekord!" : ""));
+            alert("Congratulation! \nYour level: " + level + (newRecord ? "\nNew record!" : ""));
 
             if (newRecord) {
                 $.cookie('time_trial_score', level, {
