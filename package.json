@@ -1,0 +1,41 @@
+{
+  "name": "pipe-dreams",
+  "version": "1.0.0",
+  "description": "It's an old-skool web game written in javascript. Your goal is to turn all the pipes into the correct position",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Wh1teRabbitHU/PipeDreams.git"
+  },
+  "keywords": [
+    "pipe",
+    "dreams",
+    "javascript",
+    "game"
+  ],
+  "author": "Tamás Ruszka",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/Wh1teRabbitHU/PipeDreams/issues"
+  },
+  "homepage": "https://github.com/Wh1teRabbitHU/PipeDreams#readme",
+  "devDependencies": {
+    "browser-sync": "^2.26.7",
+    "browserify": "^16.5.0",
+    "del": "^5.1.0",
+    "eslint": "^6.3.0",
+    "express": "^4.17.1",
+    "gulp": "^4.0.2",
+    "gulp-clean-css": "^4.2.0",
+    "gulp-concat-css": "^3.1.0",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-stylus": "^2.7.0",
+    "gulp-uglify": "^3.0.2",
+    "require-globify": "^1.4.1",
+    "vinyl-buffer": "^1.0.1",
+    "vinyl-source-stream": "^2.0.0"
+  }
+}
