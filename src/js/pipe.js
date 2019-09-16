@@ -1,8 +1,8 @@
 'use strict';
 
-const cookie = require('./modules/cookie');
+const Kinetic = require('kinetic');
 
-const Kinetic = window.Kinetic;
+const cookie = require('./modules/cookie');
 
 let width = 1280,
 	height = 720,
