@@ -1,6 +1,6 @@
 {
   "name": "pipe-dreams",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "It's an old-skool web game written in javascript. Your goal is to turn all the pipes into the correct position",
   "main": "index.js",
   "scripts": {
@@ -35,7 +35,11 @@
     "gulp-stylus": "^2.7.0",
     "gulp-uglify": "^3.0.2",
     "require-globify": "^1.4.1",
+    "uglify-es": "^3.3.9",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0"
+  },
+  "dependencies": {
+    "kinetic": "^5.2.0"
   }
 }
