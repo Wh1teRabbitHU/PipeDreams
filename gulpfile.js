@@ -10,9 +10,12 @@ const buffer     = require('vinyl-buffer');
 const gulp       = require('gulp');
 const stylus     = require('gulp-stylus');
 const sourcemaps = require('gulp-sourcemaps');
-const uglify     = require('gulp-uglify');
+const composer   = require('gulp-uglify/composer');
+const uglifyEs   = require('uglify-es');
 const concatCss  = require('gulp-concat-css');
 const cleanCss   = require('gulp-clean-css');
+
+const uglifyEs6   = composer(uglifyEs, console);
 
 let browserSync = bsync.create();
 
@@ -59,7 +62,7 @@ gulp.task('js', () => {
 		.pipe(source('main.min.js'))
 		.pipe(buffer())
 		.pipe(sourcemaps.init({ loadMaps: true }))
-		.pipe(uglify())
+		.pipe(uglifyEs6())
 		.pipe(sourcemaps.write())
 		.pipe(gulp.dest('./release/js'))
 		.pipe(bsync.stream({ once: true }));
@@ -82,7 +85,7 @@ gulp.task('browser-reload', (done) => {
 });
 
 gulp.task('watch', () => {
-	gulp.watch('./src/**/*', gulp.series('browser-reload'));
+	gulp.watch('./src/**/*', gulp.series('compile', 'browser-reload'));
 });
 
 gulp.task('compile', gulp.series('clean', gulp.parallel('static-files', 'stylus', 'js')));
