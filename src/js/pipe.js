@@ -1,6 +1,7 @@
 'use strict';
 
-const jQuery = window.jQuery;
+const cookie = require('./modules/cookie');
+
 const Kinetic = window.Kinetic;
 
 let width = 1280,
@@ -75,7 +76,7 @@ function startNewClassicGame() {
 	timer.start();
 
 	information.initPanel();
-	information.updateScore(typeof jQuery.cookie('classic_high_score_' + gameDifficulty) == 'undefined' ? '--/--' : jQuery.cookie('classic_high_score_' + gameDifficulty));
+	information.updateScore(cookie.get('classic_high_score_' + gameDifficulty, '--/--'));
 	information.hideLevel();
 }
 
@@ -111,7 +112,7 @@ function startNewTimeTrialGame() {
 
 	information = new InformationPanel();
 	information.initPanel();
-	information.updateScore(typeof jQuery.cookie('time_trial_score') == 'undefined' ? '-' : jQuery.cookie('time_trial_score'));
+	information.updateScore(cookie.get('time_trial_score', '-'));
 	information.updateTimer(timer.getMin() + ':' + timer.getSec());
 	information.updateLevel(level);
 }
@@ -615,7 +616,7 @@ function scoreBoardMenu() {
 	var easyText = new Kinetic.Text({
 		x: width / 2 - 120,
 		y: height / 3 - 40,
-		text: 'Easy\n' + (typeof jQuery.cookie('classic_high_score_easy') == 'undefined' ? '99:99' : jQuery.cookie('classic_high_score_easy')),
+		text: 'Easy\n' + cookie.get('classic_high_score_easy', '99:99'),
 		fontSize: 18,
 		fontFamily: 'Calibri',
 		fill: 'grey'
@@ -628,7 +629,7 @@ function scoreBoardMenu() {
 	var mediumText = new Kinetic.Text({
 		x: width / 2,
 		y: height / 3 - 40,
-		text: 'Medium\n' + (typeof jQuery.cookie('classic_high_score_medium') == 'undefined' ? '99:99' : jQuery.cookie('classic_high_score_medium')),
+		text: 'Medium\n' + cookie.get('classic_high_score_medium', '99:99'),
 		fontSize: 18,
 		fontFamily: 'Calibri',
 		fill: 'grey'
@@ -641,7 +642,7 @@ function scoreBoardMenu() {
 	var hardText = new Kinetic.Text({
 		x: width / 2 + 120,
 		y: height / 3 - 40,
-		text: 'Hard\n' + (typeof jQuery.cookie('classic_high_score_hard') == 'undefined' ? '99:99' : jQuery.cookie('classic_high_score_hard')),
+		text: 'Hard\n' + cookie.get('classic_high_score_hard', '99:99'),
 		fontSize: 18,
 		fontFamily: 'Calibri',
 		fill: 'grey'
@@ -667,7 +668,7 @@ function scoreBoardMenu() {
 	var levelText = new Kinetic.Text({
 		x: width / 2,
 		y: height / 3 + 100,
-		text: (typeof jQuery.cookie('time_trial_score') == 'undefined' ? '0' : jQuery.cookie('time_trial_score')) + '. level',
+		text: cookie.get('time_trial_score', '0') + '. level',
 		fontSize: 18,
 		fontFamily: 'Calibri',
 		fill: 'grey'
@@ -1216,19 +1217,16 @@ function classicGameFinished() {
 
 		var newRecord = false;
 
-		if (typeof jQuery.cookie('classic_high_score_' + gameDifficulty) == 'undefined') {
+		if (cookie.get('classic_high_score_' + gameDifficulty) === null) {
 			newRecord = true;
-		} else if (jQuery.cookie('classic_high_score_' + gameDifficulty) > timer.getMin() + ' : ' + timer.getSec()) {
+		} else if (cookie.get('classic_high_score_' + gameDifficulty) > timer.getMin() + ' : ' + timer.getSec()) {
 			newRecord = true;
 		}
 
 		// eslint-disable-next-line no-alert
 		alert('Congratulation, you solved the level! \nYour time: ' + timer.getMin() + ' : ' + timer.getSec() + (newRecord ? '\nNew record!' : ''));
 		if (newRecord) {
-			jQuery.cookie('classic_high_score_' + gameDifficulty, timer.getMin() + ' : ' + timer.getSec(), {
-				expires: 365,
-				path: '/'
-			});
+			cookie.set('classic_high_score_' + gameDifficulty, timer.getMin() + ' : ' + timer.getSec());
 		}
 
 		mainMenu();
@@ -1250,9 +1248,9 @@ function timeTrialGameTimeUp() {
 	setTimeout(function() {
 		var newRecord = false;
 
-		if (typeof jQuery.cookie('time_trial_score') == 'undefined') {
+		if (cookie.get('time_trial_score') === null) {
 			newRecord = true;
-		} else if (jQuery.cookie('time_trial_score') < level) {
+		} else if (cookie.get('time_trial_score') < level) {
 			newRecord = true;
 		}
 
@@ -1260,10 +1258,7 @@ function timeTrialGameTimeUp() {
 		alert('Congratulation! \nYour level: ' + level + (newRecord ? '\nNew record!' : ''));
 
 		if (newRecord) {
-			jQuery.cookie('time_trial_score', level, {
-				expires: 365,
-				path: '/'
-			});
+			cookie.set('time_trial_score', level);
 		}
 
 		mainMenu();
