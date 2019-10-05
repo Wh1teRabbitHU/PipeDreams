@@ -2,7 +2,8 @@
 
 const Kinetic = require('kinetic');
 
-const cookie = require('./modules/cookie');
+const cookie  = require('./module/cookie');
+const Block   = require('./model/block');
 
 let width = 1280,
 	height = 720,
@@ -11,7 +12,6 @@ let width = 1280,
 	space = 5,
 	layerSize = 5,
 	level = 0,
-	animationIsRunning = false,
 	blockSize = Math.min(width, height) / Math.max(rows, columns) - space * 2,
 	startingPointX = Math.floor(rows / 2),
 	startingPointY = Math.floor(columns / 2);
@@ -819,33 +819,37 @@ function GameTable() {
 		for (let i = 0; i < rows; i++) {
 			blocks[i] = new Array(columns);
 			for (let j = 0; j < columns; j++) {
-				blocks[i][j] = new Block(i, j, i * columns + j);
+				blocks[i][j] = new Block(i, j, i * columns + j, space, blockSize);
+				// blocks[i][j].init(onClickBlock, boxAnimation);
 			}
 		}
 
 		while (generateIt) {
-			var x = Math.floor(Math.random() * rows),
-				y = Math.floor(Math.random() * columns);
+			let x = Math.floor(Math.random() * rows),
+				y = Math.floor(Math.random() * columns),
+				currentBlock = blocks[x][y];
 
 			generateIt = false;
 
-			if (blocks[x][y].getKey() !== 0) {
+			if (currentBlock.key !== 0) {
 				var direction = Math.floor(Math.random() * 4 + 0);
 
 				switch (direction) {
 					case 0:
 						if (x !== 0) {
+							let leftBlock = blocks[x - 1][y];
+
 							// Left
-							if (typeof blocks[x - 1][y] != 'undefined') {
-								if (blocks[x][y].getKey() !== blocks[x - 1][y].getKey()) {
-									blocks[x][y].setLeft(true);
-									blocks[x - 1][y].setRight(true);
-									greater = blocks[x][y].getKey() > blocks[x - 1][y].getKey() ? blocks[x][y].getKey() : blocks[x - 1][y].getKey();
-									smaller = blocks[x][y].getKey() < blocks[x - 1][y].getKey() ? blocks[x][y].getKey() : blocks[x - 1][y].getKey();
+							if (typeof leftBlock != 'undefined') {
+								if (currentBlock.key !== leftBlock.key) {
+									currentBlock.left = true;
+									leftBlock.right = true;
+									greater = currentBlock.key > leftBlock.key ? currentBlock.key : leftBlock.key;
+									smaller = currentBlock.key < leftBlock.key ? currentBlock.key : leftBlock.key;
 									for (let i = 0; i < rows; i++) {
 										for (let j = 0; j < columns; j++) {
-											if (blocks[i][j].getKey() === greater) {
-												blocks[i][j].setKey(smaller);
+											if (currentBlock.key === greater) {
+												currentBlock.key = smaller;
 											}
 										}
 									}
@@ -855,17 +859,19 @@ function GameTable() {
 						break;
 					case 1:
 						if (y !== 0) {
+							let upBlock = blocks[x][y - 1];
+
 							// Up
-							if (typeof blocks[x][y - 1] != 'undefined') {
-								if (blocks[x][y].getKey() !== blocks[x][y - 1].getKey()) {
-									blocks[x][y].setUp(true);
-									blocks[x][y - 1].setDown(true);
-									greater = blocks[x][y].getKey() > blocks[x][y - 1].getKey() ? blocks[x][y].getKey() : blocks[x][y - 1].getKey();
-									smaller = blocks[x][y].getKey() < blocks[x][y - 1].getKey() ? blocks[x][y].getKey() : blocks[x][y - 1].getKey();
+							if (typeof upBlock != 'undefined') {
+								if (currentBlock.key !== upBlock.key) {
+									currentBlock.up = true;
+									upBlock.down = true;
+									greater = currentBlock.key > upBlock.key ? currentBlock.key : upBlock.key;
+									smaller = currentBlock.key < upBlock.key ? currentBlock.key : upBlock.key;
 									for (let i = 0; i < rows; i++) {
 										for (let j = 0; j < columns; j++) {
-											if (blocks[i][j].getKey() === greater) {
-												blocks[i][j].setKey(smaller);
+											if (blocks[i][j].key === greater) {
+												blocks[i][j].key = smaller;
 											}
 										}
 									}
@@ -875,17 +881,19 @@ function GameTable() {
 						break;
 					case 2:
 						if (x !== columns - 1) {
+							let rightBlock = blocks[x + 1][y];
+
 							// Right
-							if (typeof blocks[x + 1][y] != 'undefined') {
-								if (blocks[x][y].getKey() !== blocks[x + 1][y].getKey()) {
-									blocks[x][y].setRight(true);
-									blocks[x + 1][y].setLeft(true);
-									greater = blocks[x][y].getKey() > blocks[x + 1][y].getKey() ? blocks[x][y].getKey() : blocks[x + 1][y].getKey();
-									smaller = blocks[x][y].getKey() < blocks[x + 1][y].getKey() ? blocks[x][y].getKey() : blocks[x + 1][y].getKey();
+							if (typeof rightBlock != 'undefined') {
+								if (currentBlock.key !== rightBlock.key) {
+									currentBlock.right = true;
+									rightBlock.left = true;
+									greater = currentBlock.key > rightBlock.key ? currentBlock.key : rightBlock.key;
+									smaller = currentBlock.key < rightBlock.key ? currentBlock.key : rightBlock.key;
 									for (let i = 0; i < rows; i++) {
 										for (let j = 0; j < columns; j++) {
-											if (blocks[i][j].getKey() === greater) {
-												blocks[i][j].setKey(smaller);
+											if (blocks[i][j].key === greater) {
+												blocks[i][j].key = smaller;
 											}
 										}
 									}
@@ -895,17 +903,19 @@ function GameTable() {
 						break;
 					case 3:
 						if (y !== rows - 1) {
+							let downBlock = blocks[x][y + 1];
+
 							// Down
-							if (typeof blocks[x][y + 1] != 'undefined') {
-								if (blocks[x][y].getKey() !== blocks[x][y + 1].getKey()) {
-									blocks[x][y].setDown(true);
-									blocks[x][y + 1].setUp(true);
-									greater = blocks[x][y].getKey() > blocks[x][y + 1].getKey() ? blocks[x][y].getKey() : blocks[x][y + 1].getKey();
-									smaller = blocks[x][y].getKey() < blocks[x][y + 1].getKey() ? blocks[x][y].getKey() : blocks[x][y + 1].getKey();
+							if (typeof downBlock != 'undefined') {
+								if (currentBlock.key !== downBlock.key) {
+									currentBlock.down = true;
+									downBlock.up = true;
+									greater = currentBlock.key > downBlock.key ? currentBlock.key : downBlock.key;
+									smaller = currentBlock.key < downBlock.key ? currentBlock.key : downBlock.key;
 									for (let i = 0; i < rows; i++) {
 										for (let j = 0; j < columns; j++) {
-											if (blocks[i][j].getKey() === greater) {
-												blocks[i][j].setKey(smaller);
+											if (blocks[i][j].key === greater) {
+												blocks[i][j].key = smaller;
 											}
 										}
 									}
@@ -919,14 +929,14 @@ function GameTable() {
 			}
 			for (let i = 0; i < rows; i++) {
 				for (let j = 0; j < columns; j++) {
-					if (blocks[i][j].getKey() > 0) {
+					if (blocks[i][j].key > 0) {
 						generateIt = true;
 					}
 				}
 			}
 		}
-		blocks[startingPointX][startingPointY].setConnected(true);
-		blocks[startingPointX][startingPointY].connectionHandler(true);
+		// blocks[startingPointX][startingPointY].connected = true;
+		// blocks[startingPointX][startingPointY].connectionHandler(true);
 	};
 
 	this.shuffle = function() {
@@ -938,12 +948,18 @@ function GameTable() {
 	};
 
 	this.drawGame = function() {
+
 		for (let i = 0; i < rows; i++) {
 			for (let j = 0; j < columns; j++) {
-				blocks[i][j].init();
-				gameLayers[Math.floor(i / layerSize)][Math.floor(j / layerSize)].add(blocks[i][j].getBox());
+				blocks[i][j].init(onClickBlock, boxAnimation, width, rows);
+
+				gameLayers[Math.floor(i / layerSize)][Math.floor(j / layerSize)].add(blocks[i][j].box);
 			}
 		}
+
+		blocks[startingPointX][startingPointY].connected = true;
+		blocks[startingPointX][startingPointY].connectionHandler(true);
+
 		this.checkPipeConnections();
 		for (let i = 0; i < layerRows; i++) {
 			for (let j = 0; j < layerColumns; j++) {
@@ -953,31 +969,30 @@ function GameTable() {
 	};
 
 	this.checkPipeConnections = function() {
-
 		var i = 0;
 		var j = 0;
 
 		for (i = 0; i < rows; i++) {
 			for (j = 0; j < columns; j++) {
-				blocks[i][j].setConnected(false);
+				blocks[i][j].connected = false;
 				blocks[i][j].connectionHandler(false);
 			}
 		}
-		blocks[startingPointX][startingPointY].setConnected(true);
+		blocks[startingPointX][startingPointY].connected = true;
 		blocks[startingPointX][startingPointY].connectionHandler(true);
 
 		// Iterate throught the matrix
 		for (i = 0; i < rows; i++) {
 			for (j = 0; j < columns; j++) {
 				// If current element is connecting
-				if (blocks[i][j].getConnected()) {
+				if (blocks[i][j].connected) {
 					var updated = false;
 					// Left
 
 					if (i !== 0 && !updated) {
-						if (blocks[i][j].getLeft() && blocks[i - 1][j].getRight()) {
-							if (!blocks[i - 1][j].getConnected()) {
-								blocks[i - 1][j].setConnected(true);
+						if (blocks[i][j].left && blocks[i - 1][j].right) {
+							if (!blocks[i - 1][j].connected) {
+								blocks[i - 1][j].connected = true;
 								blocks[i - 1][j].connectionHandler(true);
 								i = 0;
 								j = -1;
@@ -987,9 +1002,9 @@ function GameTable() {
 					}
 					// Right
 					if (i !== rows - 1 && !updated) {
-						if (blocks[i][j].getRight() && blocks[i + 1][j].getLeft()) {
-							if (!blocks[i + 1][j].getConnected()) {
-								blocks[i + 1][j].setConnected(true);
+						if (blocks[i][j].right && blocks[i + 1][j].left) {
+							if (!blocks[i + 1][j].connected) {
+								blocks[i + 1][j].connected = true;
 								blocks[i + 1][j].connectionHandler(true);
 								i = 0;
 								j = -1;
@@ -999,9 +1014,9 @@ function GameTable() {
 					}
 					// Up
 					if (j !== 0 && !updated) {
-						if (blocks[i][j].getUp() && blocks[i][j - 1].getDown()) {
-							if (!blocks[i][j - 1].getConnected()) {
-								blocks[i][j - 1].setConnected(true);
+						if (blocks[i][j].up && blocks[i][j - 1].down) {
+							if (!blocks[i][j - 1].connected) {
+								blocks[i][j - 1].connected = true;
 								blocks[i][j - 1].connectionHandler(true);
 								i = 0;
 								j = -1;
@@ -1011,9 +1026,9 @@ function GameTable() {
 					}
 					// Down
 					if (j !== columns - 1 && !updated) {
-						if (blocks[i][j].getDown() && blocks[i][j + 1].getUp()) {
-							if (!blocks[i][j + 1].getConnected()) {
-								blocks[i][j + 1].setConnected(true);
+						if (blocks[i][j].down && blocks[i][j + 1].up) {
+							if (!blocks[i][j + 1].connected) {
+								blocks[i][j + 1].connected = true;
 								blocks[i][j + 1].connectionHandler(true);
 								i = 0;
 								j = -1;
@@ -1266,7 +1281,81 @@ function timeTrialGameTimeUp() {
 	}, 300);
 }
 
-function Block(row, column, generateKey) {
+function checkGameStatus() {
+	var finished = true;
+
+	for (let i = 0; i < rows; i++) {
+		for (let j = 0; j < columns; j++) {
+			if (!blocks[i][j].connected) {
+				finished = false;
+			}
+		}
+	}
+
+	if (finished) {
+		if (gameType === 'classic') {
+			classicGameFinished();
+		} else if (gameType === 'time-trial') {
+			timeTrialGameFinished();
+		}
+	} else {
+		for (let i = 0; i < layerRows; i++) {
+			for (let j = 0; j < layerColumns; j++) {
+				gameLayers[i][j].draw();
+			}
+		}
+	}
+}
+
+function onClickBlock(instance) {
+	if (!instance.mouseClick.isRunning() && !instance.animationIsRunning) {
+		instance.rotateRight();
+		instance.mouseClick.start();
+		setTimeout(function() {
+			table.checkPipeConnections();
+			checkGameStatus();
+		}, 100);
+	}
+}
+
+function boxAnimation(instance) {
+	return new Kinetic.Animation(function() {
+		instance.animationIsRunning = true;
+		instance.box.rotate(5);
+		if (instance.box.rotation() >= instance.rotation + 90) {
+			instance.box.rotation(instance.rotation + 90);
+			instance.rotation = instance.box.rotation();
+
+			var finished = true;
+
+			for (let i = 0; i < rows; i++) {
+				for (let j = 0; j < columns; j++) {
+					if (!blocks[i][j].connected) {
+						finished = false;
+					}
+				}
+			}
+			this.stop();
+			instance.animationIsRunning = false;
+			if (finished) {
+				if (gameType === 'classic') {
+					classicGameFinished();
+				} else if (gameType === 'time-trial') {
+					timeTrialGameFinished();
+				}
+			} else {
+				for (let i = 0; i < layerRows; i++) {
+					for (let j = 0; j < layerColumns; j++) {
+						gameLayers[i][j].draw();
+					}
+				}
+			}
+		}
+	}, gameLayers[Math.floor(instance.row / layerSize)][Math.floor(instance.column / layerSize)]);
+}
+
+/*
+function OldBlock(row, column, generateKey) {
 
 	// Main attributes
 	var x = row * (space * 2 + blockSize) + space;
@@ -1501,6 +1590,7 @@ function Block(row, column, generateKey) {
 				mouseClick.start();
 				setTimeout(function() {
 					table.checkPipeConnections();
+					checkGameStatus();
 				}, 100);
 			}
 		});
@@ -1509,6 +1599,7 @@ function Block(row, column, generateKey) {
 		box.add(pipes);
 	};
 }
+*/
 
 module.exports = {
 	loadApplication: loadApplication
