@@ -1,9 +1,10 @@
 'use strict';
 
-const Kinetic = require('kinetic');
+const Kinetic   = require('kinetic');
 
-const cookie  = require('./module/cookie');
-const Block   = require('./model/block');
+const cookie    = require('./module/cookie');
+const Block     = require('./model/block');
+const GameTimer = require('./model/game-timer');
 
 let width = 1280,
 	height = 720,
@@ -69,11 +70,10 @@ function startNewClassicGame() {
 	table.shuffle();
 	table.drawGame();
 
-	timer = new GameTimer();
+	createTimer(true);
 	information = new InformationPanel();
 
-	timer.setInc(true);
-	timer.start();
+	timer.start(information);
 
 	information.initPanel();
 	information.updateScore(cookie.get('classic_high_score_' + gameDifficulty, '--/--'));
@@ -81,6 +81,42 @@ function startNewClassicGame() {
 }
 
 function startNewTimeTrialGame() {
+	if (stage.hasChildren()) {
+		stage.destroyChildren();
+	}
+
+	gameType = 'time-trial';
+
+	level = 1;
+
+	rows = 4 + level;
+	columns = 4 + level;
+
+	startingPointX = Math.floor(rows / 2);
+	startingPointY = Math.floor(columns / 2);
+	layerRows = Math.floor(rows / layerSize) + 1;
+	layerColumns = Math.floor(columns / layerSize) + 1;
+	blockSize = Math.min(width, height) / Math.max(rows, columns) - space * 2;
+
+	table = new GameTable();
+	table.generateFields();
+	table.shuffle();
+	table.drawGame();
+
+	information = new InformationPanel();
+	information.initPanel();
+
+	createTimer(false);
+
+	timer.start(information);
+	timer.time = 120;
+
+	information.updateScore(cookie.get('time_trial_score', '-'));
+	information.updateTimer(timer.minutes + ':' + timer.seconds);
+	information.updateLevel(level);
+}
+
+function startNextTimeTrialGame() {
 	if (stage.hasChildren()) {
 		stage.destroyChildren();
 	}
@@ -103,20 +139,18 @@ function startNewTimeTrialGame() {
 	table.shuffle();
 	table.drawGame();
 
-	if (typeof timer === 'undefined') {
-		timer = new GameTimer();
-	}
-	timer.setInc(false);
-	timer.setCurrentTime((timer.getCurrentTime() === 0 ? 80 : timer.getCurrentTime()) + 30 + level * 10);
-	timer.start();
-
 	information = new InformationPanel();
 	information.initPanel();
+
+	timer.time = timer.time + 30 + level * 10;
+	timer.start(information);
+
 	information.updateScore(cookie.get('time_trial_score', '-'));
-	information.updateTimer(timer.getMin() + ':' + timer.getSec());
+	information.updateTimer(timer.minutes + ':' + timer.seconds);
 	information.updateLevel(level);
 }
 
+/*
 function GameTimer() {
 	// Options
 	var inc = true;
@@ -189,6 +223,7 @@ function GameTimer() {
 		currentSec = currentSec < 10 ? '0' + currentSec : currentSec;
 	}
 }
+*/
 
 function mainMenu() {
 
@@ -1234,14 +1269,14 @@ function classicGameFinished() {
 
 		if (cookie.get('classic_high_score_' + gameDifficulty) === null) {
 			newRecord = true;
-		} else if (cookie.get('classic_high_score_' + gameDifficulty) > timer.getMin() + ' : ' + timer.getSec()) {
+		} else if (cookie.get('classic_high_score_' + gameDifficulty) > timer.minutes + ' : ' + timer.seconds) {
 			newRecord = true;
 		}
 
 		// eslint-disable-next-line no-alert
-		alert('Congratulation, you solved the level! \nYour time: ' + timer.getMin() + ' : ' + timer.getSec() + (newRecord ? '\nNew record!' : ''));
+		alert('Congratulation, you solved the level! \nYour time: ' + timer.minutes + ' : ' + timer.seconds + (newRecord ? '\nNew record!' : ''));
 		if (newRecord) {
-			cookie.set('classic_high_score_' + gameDifficulty, timer.getMin() + ' : ' + timer.getSec());
+			cookie.set('classic_high_score_' + gameDifficulty, timer.minutes + ' : ' + timer.seconds);
 		}
 
 		mainMenu();
@@ -1252,33 +1287,7 @@ function classicGameFinished() {
 function timeTrialGameFinished() {
 	timer.stop();
 
-	setTimeout(function() {
-		startNewTimeTrialGame();
-	}, 300);
-}
-
-function timeTrialGameTimeUp() {
-	timer.stop();
-
-	setTimeout(function() {
-		var newRecord = false;
-
-		if (cookie.get('time_trial_score') === null) {
-			newRecord = true;
-		} else if (cookie.get('time_trial_score') < level) {
-			newRecord = true;
-		}
-
-		// eslint-disable-next-line no-alert
-		alert('Congratulation! \nYour level: ' + level + (newRecord ? '\nNew record!' : ''));
-
-		if (newRecord) {
-			cookie.set('time_trial_score', level);
-		}
-
-		mainMenu();
-
-	}, 300);
+	startNextTimeTrialGame();
 }
 
 function checkGameStatus() {
@@ -1352,6 +1361,38 @@ function boxAnimation(instance) {
 			}
 		}
 	}, gameLayers[Math.floor(instance.row / layerSize)][Math.floor(instance.column / layerSize)]);
+}
+
+function createTimer(forward) {
+	if (typeof timer != 'undefined') {
+		timer.reset();
+
+		return;
+	}
+
+	timer = new GameTimer(forward);
+	timer.onTimesUp = () => {
+		timer.stop();
+
+		setTimeout(function() {
+			var newRecord = false;
+
+			if (cookie.get('time_trial_score') === null) {
+				newRecord = true;
+			} else if (cookie.get('time_trial_score') < level) {
+				newRecord = true;
+			}
+
+			// eslint-disable-next-line no-alert
+			alert('Congratulation! \nYour level: ' + level + (newRecord ? '\nNew record!' : ''));
+
+			if (newRecord) {
+				cookie.set('time_trial_score', level);
+			}
+
+			mainMenu();
+		}, 300);
+	};
 }
 
 module.exports = {
