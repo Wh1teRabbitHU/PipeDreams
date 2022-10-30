@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/Wh1teRabbitHU/PipeDreams#readme",
   "devDependencies": {
-    "browser-sync": "^2.26.7",
+    "browser-sync": "^2.27.10",
     "browserify": "^16.5.0",
     "del": "^5.1.0",
     "eslint": "^6.3.0",
